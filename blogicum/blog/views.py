@@ -7,7 +7,9 @@ from django.utils import timezone
 
 def index(request):
     post = (
-        m.Post.objects.select_related("author", "location", "category")
+        m.Post.objects.select_related("author", 
+                                      "location",
+                                        "category")
         .order_by("pub_date")
         .filter(
             Q(pub_date__lte=timezone.now())
@@ -15,16 +17,20 @@ def index(request):
             & Q(category__is_published=True)
         )[0:5]
     )
-    return render(request, "blog/index.html", {"post_list": post})
+    return render(request,
+                   "blog/index.html",
+                     {"post_list": post})
 
 
 def category_posts(request, category_slug):
-    category = get_object_or_404(m.Category, slug=category_slug)
+    category = get_object_or_404(m.Category,
+                                  slug=category_slug)
     if category.is_published is False:
         raise Http404
     context = {
         "category": category,
-        "post_list": m.Post.objects.select_related("location").filter(
+        "post_list": m.Post.objects.select_related(
+            "location").filter(
             Q(category__slug=category_slug)
             & Q(is_published=True)
             & Q(pub_date__lte=timezone.now())
@@ -35,7 +41,10 @@ def category_posts(request, category_slug):
 
 def post_detail(request, pk):
     post = get_object_or_404(m.Post, pk=pk)
-    post = m.Post.objects.select_related("author", "location", "category").get(pk=pk)
+    post = m.Post.objects.select_related("author",
+                                          "location",
+                                            "category").get(
+                                                pk=pk)
     if (
         post.pub_date > timezone.now()
         or post.is_published is False
