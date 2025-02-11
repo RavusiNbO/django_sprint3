@@ -1,13 +1,13 @@
 from django.shortcuts import render, get_object_or_404
 from django.db.models import Q
-from . import models
+from . import models as m
 from django.http import Http404
 from django.utils import timezone
 
 
 def index(request):
     post = (
-        models.Post.objects.select_related("author", "location", "category")
+        m.Post.objects.select_related("author", "location", "category")
         .order_by("pub_date")
         .filter(
             Q(pub_date__lte=timezone.now())
@@ -19,12 +19,12 @@ def index(request):
 
 
 def category_posts(request, category_slug):
-    category = get_object_or_404(models.Category, slug=category_slug)
-    if category.is_published == False:
+    category = get_object_or_404(m.Category, slug=category_slug)
+    if category.is_published is False:
         raise Http404
     context = {
         "category": category,
-        "post_list": models.Post.objects.select_related("location").filter(
+        "post_list": m.Post.objects.select_related("location").filter(
             Q(category__slug=category_slug)
             & Q(is_published=True)
             & Q(pub_date__lte=timezone.now())
@@ -34,13 +34,12 @@ def category_posts(request, category_slug):
 
 
 def post_detail(request, pk):
-    post = get_object_or_404(models.Post, pk=pk)
-    post = models.Post.objects.select_related("author", "location", "category").get(pk=pk)
-    # models.Post.objects.select_related("author", "location", "category")
+    post = get_object_or_404(m.Post, pk=pk)
+    post = m.Post.objects.select_related("author", "location", "category").get(pk=pk)
     if (
         post.pub_date > timezone.now()
-        or post.is_published == False
-        or post.category.is_published == False
+        or post.is_published is False
+        or post.category.is_published is False
     ):
         raise Http404
     return render(request, "blog/detail.html", {"post": post})
