@@ -3,6 +3,13 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
+q = "Идентификатор страницы для URL; разрешены "
+r = "символы латиницы, цифры, дефис и подчёркивание."
+w = "Если установить дату и время в будущем "
+y = "— можно делать отложенные публикации."
+g = q + r
+v = w + y
+
 
 class Base(models.Model):
     is_published = models.BooleanField(
@@ -25,8 +32,7 @@ class Category(Base):
         "Идентификатор",
         blank=False,
         unique=True,
-        help_text="Идентификатор страницы для URL;" /
-        " разрешены символы латиницы, цифры, дефис и подчёркивание.",
+        help_text=g,
     )
 
     class Meta:
@@ -48,8 +54,7 @@ class Post(Base):
     pub_date = models.DateTimeField(
         "Дата и время публикации",
         blank=False,
-        help_text="Если установить дату и время в будущем" /
-        " — можно делать отложенные публикации.",
+        help_text=v,
     )
     author = models.ForeignKey(
         User,
