@@ -4,6 +4,7 @@ from . import models as m
 from django.http import Http404
 from django.utils import timezone
 
+
 def index(request):
     post = (
         m.Post.objects.select_related("author", "location", "category")
@@ -25,9 +26,7 @@ def category_posts(request, category_slug):
         raise Http404
     context = {
         "category": category,
-        "post_list": m.Post.objects
-        .select_related("location")
-        .filter(
+        "post_list": m.Post.objects.select_related("location").filter(
             Q(category__slug=category_slug)
             & Q(is_published=True)
             & Q(pub_date__lte=timezone.now())
@@ -40,9 +39,9 @@ def category_posts(request, category_slug):
 def post_detail(request, pk):
     post = get_object_or_404(m.Post, pk=pk)
     a = "author"
-    l = "location"
+    lo = "location"
     c = "category"
-    post = m.Post.objects.select_related(a, l, c).get(pk=pk)
+    post = m.Post.objects.select_related(a, lo, c).get(pk=pk)
     if (
         post.pub_date > timezone.now()
         or post.is_published is False

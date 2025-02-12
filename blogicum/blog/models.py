@@ -11,7 +11,8 @@ class Base(models.Model):
         default=True,
         help_text="Снимите галочку, чтобы скрыть публикацию.",
     )
-    created_at = models.DateTimeField("Добавлено", blank=False, auto_now_add=True)
+    d = "Добавлено"
+    created_at = models.DateTimeField(d, blank=False, auto_now_add=True)
 
     class Meta:
         abstract = True
@@ -24,7 +25,8 @@ class Category(Base):
         "Идентификатор",
         blank=False,
         unique=True,
-        help_text="Идентификатор страницы для URL; разрешены символы латиницы, цифры, дефис и подчёркивание.",
+        help_text="""Идентификатор страницы для URL; раз
+        решены символы латиницы, цифры, дефис и подчёркивание.""",
     )
 
     class Meta:
@@ -46,7 +48,8 @@ class Post(Base):
     pub_date = models.DateTimeField(
         "Дата и время публикации",
         blank=False,
-        help_text="Если установить дату и время в будущем — можно делать отложенные публикации.",
+        help_text="""Если установить дату и время в будущем —
+          можно делать отложенные публикации.""",
     )
     author = models.ForeignKey(
         User,
